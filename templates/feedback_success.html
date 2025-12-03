@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Submitted Successfully</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            text-align: center;
+            background: #F98866;
+            padding: 20px 0;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 500px;
+            background: #FFF2D7;
+            margin: 0 auto;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 90%;
+            box-sizing: border-box;
+        }
+
+        /* Mobile First Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px 0;
+            }
+            .container {
+                padding: 30px 20px;
+                width: 95%;
+                border-radius: 10px;
+            }
+            .success, .sorry {
+                font-size: 24px;
+            }
+            .message {
+                font-size: 16px;
+            }
+            .voucher-code {
+                font-size: 18px;
+                padding: 8px;
+            }
+            .emoji {
+                font-size: 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px 0;
+            }
+            .container {
+                padding: 25px 15px;
+                width: 98%;
+                border-radius: 8px;
+            }
+            .success, .sorry {
+                font-size: 20px;
+                margin: 15px 0;
+            }
+            .message {
+                font-size: 14px;
+                line-height: 1.4;
+            }
+            .voucher-info {
+                padding: 15px;
+                margin: 15px 0;
+            }
+            .voucher-code {
+                font-size: 16px;
+                padding: 6px;
+            }
+            .emoji {
+                font-size: 36px;
+                margin: 15px 0;
+            }
+            a {
+                padding: 10px 20px;
+                font-size: 14px;
+                margin: 8px;
+                display: inline-block;
+                min-width: 120px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .container {
+                padding: 20px 10px;
+            }
+            a {
+                display: block;
+                margin: 10px auto;
+                width: 80%;
+            }
+        }
+        .success {
+            color: #2ed573;
+            font-size: 28px;
+            margin: 20px 0;
+        }
+        .sorry {
+            color: #ff4757;
+            font-size: 28px;
+            margin: 20px 0;
+        }
+        .message {
+            font-size: 18px;
+            margin: 20px 0;
+            line-height: 1.5;
+        }
+        .voucher-info {
+            background: #f1f2f6;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #ff4757;
+        }
+        .voucher-code {
+            font-family: monospace;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2f3542;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        a {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 24px;
+            background: #F98866;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        a:hover {
+            background: #e67e22;
+        }
+        .emoji {
+            font-size: 48px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if request.session.is_negative_feedback %}
+            <div class="emoji"></div>
+            <h1 class="sorry">We're Sorry!</h1>
+            <p class="message">We're sorry your order experience — You've earned a 10% discount voucher for your next visit.see you soon</p>
+            {% if request.session.voucher_code %}
+                <div class="voucher-info">
+                    <p><strong>Your Discount Voucher:</strong></p>
+                    <div class="voucher-code">{{ request.session.voucher_code }}</div>
+                    <p><small>Present this code on your next visit for 10% off!</small></p>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="emoji"></div>
+            <h1 class="success">Thank You</h1>
+            <p class="message">Thank you for your feedback. We appreciate your comments.</p>
+        {% endif %}
+        
+        <a href="{% url 'home' %}">Back to Home</a>
+        <a href="{% url 'feedback_form' %}">Submit Another Feedback</a>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show popup automatically when page loads
+            showPopup();
+
+            function showPopup() {
+                // Create popup overlay
+                const overlay = document.createElement('div');
+                overlay.id = 'popupOverlay';
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.5);
+                    z-index: 1000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    animation: fadeIn 0.3s;
+                `;
+
+                // Create popup content
+                const popup = document.createElement('div');
+                popup.style.cssText = `
+                    background: white;
+                    padding: 30px;
+                    border-radius: 15px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                    max-width: 400px;
+                    width: 90%;
+                    text-align: center;
+                    animation: slideIn 0.3s;
+                    position: relative;
+                `;
+
+                {% if request.session.is_negative_feedback %}
+                    // Negative feedback popup with voucher
+                    popup.innerHTML = `
+                        <div style="font-size: 3rem; margin: 20px 0;">😞</div>
+                        <h2 style="margin: 0 0 20px 0; color: #333;">We're Sorry!</h2>
+                        <p style="margin: 15px 0; line-height: 1.5;">We're sorry your order experience wasn't great  — You've earned a 10% discount voucher for your next visit!</p>
+                        {% if request.session.voucher_code %}
+                            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 5px solid #667eea;">
+                                <p style="margin: 0 0 10px 0;"><strong>Your Discount Voucher:</strong></p>
+                                <div style="font-family: monospace; font-size: 1.5rem; font-weight: bold; color: #667eea; background: white; padding: 10px 15px; border-radius: 5px; margin: 10px 0; border: 2px dashed #667eea;">{{ request.session.voucher_code }}</div>
+                                <p style="margin: 10px 0 0 0; font-size: 0.9rem; color: #666;">Present this code on your next visit for 10% off!</p>
+                            </div>
+                        {% endif %}
+                        <button onclick="closePopup()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; margin: 10px 5px;">Got it!</button>
+                    `;
+                {% else %}
+                    // Positive feedback popup
+                    popup.innerHTML = `
+                        <div style="font-size: 3rem; margin: 20px 0;">💬</div>
+                        <h2 style="margin: 0 0 20px 0; color: #333;">Thank You!</h2>
+                        <p style="margin: 15px 0; line-height: 1.5;">Thank you for your feedback 💬! We appreciate your input.</p>
+                        <button onclick="closePopup()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; margin: 10px 5px;">Great!</button>
+                    `;
+                {% endif %}
+
+                overlay.appendChild(popup);
+                document.body.appendChild(overlay);
+
+                // Add CSS animations
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    @keyframes slideIn {
+                        from { transform: translateY(-50px); opacity: 0; }
+                        to { transform: translateY(0); opacity: 1; }
+                    }
+                `;
+                document.head.appendChild(style);
+
+                // Close function
+                window.closePopup = function() {
+                    overlay.remove();
+                };
+
+                // Close on outside click
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) {
+                        overlay.remove();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

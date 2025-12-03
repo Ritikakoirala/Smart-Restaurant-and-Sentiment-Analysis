@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Submitted Successfully</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; text-align: center; }
+        .success { color: green; font-size: 24px; margin: 20px 0; }
+        a { display: inline-block; margin: 10px; padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1 class="success">Order Submitted Successfully!</h1>
+    <p>Thank you for your order. We will prepare it shortly.</p>
+    <a href="{% url 'home' %}">Back to Home</a>
+    <a href="{% url 'order_form' %}">Place Another Order</a>
+</body>
+</html>

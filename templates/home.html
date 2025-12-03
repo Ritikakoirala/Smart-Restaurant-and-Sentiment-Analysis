@@ -1,0 +1,408 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Home_page</title>
+  <link rel="stylesheet" href="{% static 'home.css' %}" />
+  <style>
+    /* Navbar Styles */
+    .navbar {
+      background-color:#F98866;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      position: relative;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .nav-brand h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-list {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      gap: 2rem;
+    }
+
+    .nav-item {
+      margin: 0;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      background-color: #f8f9fa;
+      color: #0f1214ff;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .hamburger .bar {
+      width: 25px;
+      height: 3px;
+      background-color: #333;
+      margin: 3px 0;
+      transition: 0.3s;
+      border-radius: 2px;
+    }
+
+    .hamburger.active .bar:nth-child(1) {
+      transform: rotate(-45deg) translate(-5px, 6px);
+    }
+
+    .hamburger.active .bar:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active .bar:nth-child(3) {
+      transform: rotate(45deg) translate(-5px, -6px);
+    }
+
+    /* Responsive Design for Home Page */
+    @media (max-width: 767px) {
+      .nav-container {
+        padding: 1rem;
+      }
+
+      .nav-brand h1 {
+        font-size: 1.2rem;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #F98866;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .nav-menu.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .nav-list {
+        flex-direction: column;
+        gap: 0;
+        padding: 1rem 0;
+      }
+
+      .nav-item {
+        width: 100%;
+      }
+
+      .nav-link {
+        display: block;
+        padding: 1rem 2rem;
+        border-radius: 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .nav-link:hover {
+        background-color: #f8f9fa;
+      }
+      
+      .hero-section {
+        flex-direction: column;
+        padding: 20px;
+      }
+      
+      .hero-image {
+        width: 100%;
+        height: auto;
+        margin-bottom: 20px;
+      }
+      
+      .hero-text h1 {
+        font-size: 1.8rem;
+        line-height: 1.4;
+      }
+      
+      .hero-text p {
+        font-size: 1rem;
+      }
+      
+      .content {
+        padding: 20px;
+      }
+      
+      .content h2 {
+        font-size: 1.5rem;
+      }
+      
+      .content p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+      
+      .image-gallery {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+      }
+      
+      .image-gallery img {
+        width: 100%;
+        height: auto;
+      }
+      
+      video {
+        width: 100%;
+        height: auto;
+        margin: 20px 0;
+      }
+      
+      footer {
+        padding: 20px 10px;
+      }
+      
+      .footer-top {
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .footer-section {
+        margin-bottom: 20px;
+      }
+      
+      .social-icons {
+        margin-top: 15px;
+      }
+      
+      .social-icons a {
+        margin: 0 8px;
+        font-size: 20px;
+      }
+    }
+    
+    /* Add body padding for fixed navbar */
+    body {
+      padding-top: 80px;
+    }
+
+    @media (max-width: 480px) {
+      .nav-brand h1 {
+        font-size: 1rem;
+      }
+
+      .nav-container {
+        padding: 0.8rem;
+      }
+
+      body {
+        padding-top: 70px;
+      }
+      
+      .hero-text h1 {
+        font-size: 1.5rem;
+      }
+      
+      .hero-text p {
+        font-size: 0.9rem;
+      }
+      
+      .content {
+        padding: 15px;
+      }
+      
+      .content h2 {
+        font-size: 1.3rem;
+      }
+      
+      .content p {
+        font-size: 0.85rem;
+      }
+      
+      footer {
+        padding: 15px 5px;
+      }
+      
+      .footer-section h4 {
+        font-size: 1rem;
+      }
+      
+      .footer-section p {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <img
+          src="{% static 'logo.png' %}"
+          alt="Logo"
+          class="logo"
+        />
+        <h1>A Smart Restaurant</h1>
+      </div>
+
+      <div class="nav-menu" id="nav-menu">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="home.html" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="{% static 'menus.html' %}" class="nav-link">Menu</a></li>
+          <li class="nav-item"><a href="{% static 'order.html' %}" class="nav-link">Order</a></li>
+          <li class="nav-item"><a href="{% static 'feedback.html' %}" class="nav-link">Feedback</a></li>
+          <li class="nav-item"><a href="{% static 'contact.html' %}" class="nav-link">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="hamburger" id="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero-section">
+    <img src="{% static 'front.png' %}" alt="Banner" class="hero-image" />
+    <div class="hero-text">
+      <h1>Dine Uniquely Yours: Personalized Experiences, Inspired by Your Insights.</h1>
+      <p>Where exquisite flavors meet intelligent design.</p>
+    </div>
+  </div>
+  <div class="content">
+    <h2>Redefining the Future of Dining</h2>
+    <p>Step into a revolutionary dining experience where culinary brilliance meets technological marvel. Our smart restaurant is not just a place to eat—it's a bold leap into the future of hospitality.</p>
+    <p>Powered by AI-driven personalization, intelligent ordering systems, and automated service innovations, we deliver a dining experience that is flawlessly smooth, deeply personalized, and remarkably futuristic.</p>
+    <p>From dynamic digital menus that adapt to your taste, to seamless service that anticipates your needs, every moment here is crafted to amaze. This isn’t just the next chapter in dining—it’s a whole new book.</p>
+    <p class="call-to-action">Welcome to a world where food meets the future.<br>Welcome to transformation.<br><span>Welcome to Our Smart Restaurant.</span></p>
+  </div>
+  <div class="image-gallery">
+      <img src="{% static 'image.png' %}" alt="Gallery Image 1" />
+      <img src="{% static 'wow.png' %}" alt="Gallery Image 2" />
+  </div>
+    
+  <video width="100%" height="auto" controls muted autoplay loop>
+    <source src="{% static 'video.mp4' %}" type="video/mp4" />
+  </video>
+
+  <footer style="background-color: #221f1f; color: #eee; padding: 20px; text-align: center;">
+    <div class="footer-top">
+      <div class="footer-section">
+        <h4>RESERVATIONS</h4>
+        <p><a href="#" style="color: #eee; text-decoration: none;">Modify / Cancel</a></p>
+        <p><a href="#" style="color: #eee; text-decoration: none;">Retrieve Hotel Bill</a></p>
+      </div>
+
+      <div class="footer-section">
+        <h4>CUSTOMER SERVICE</h4>
+        <p><a href="#" style="color: #eee; text-decoration: none;">FAQs</a></p>
+        <p><a href="#" style="color: #eee; text-decoration: none;">Contact Us</a></p>
+      </div>
+
+      <div class="footer-section">
+        <h4 style="margin-top: 20px;">CONNECT WITH US</h4>
+        <div class="social-icons" style="font-size: 24px; margin-top: 10px;">
+          <a href="#" style="color: #eee; margin: 0 10px;"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" style="color: #eee; margin: 0 10px;"><i class="fab fa-instagram"></i></a>
+          <a href="#" style="color: #eee; margin: 0 10px;"><i class="fab fa-x-twitter"></i></a>
+          <a href="#" style="color: #eee; margin: 0 10px;"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" style="color: #eee; margin: 0 10px;"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom" style="margin-top: 20px; border-top: 1px solid #444;">
+      <p style="margin: 10px 0 5px;">
+        <a href="#" style="color: #eee; text-decoration: none;">Privacy Policy</a> |
+        <a href="#" style="color: #eee; text-decoration: none;">Terms & Conditions</a>
+      </p>
+      <p style="margin: 5px 0 0;">&copy; 2025 Smart Restaurant</p>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle functionality
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+
+    hamburger.addEventListener('click', function() {
+      hamburger.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    });
+
+    // Close mobile menu when clicking on a nav link
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+      });
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const isClickInsideNav = navMenu.contains(event.target);
+      const isClickOnHamburger = hamburger.contains(event.target);
+
+      if (!isClickInsideNav && !isClickOnHamburger) {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>

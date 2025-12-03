@@ -1,0 +1,583 @@
+/* Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #FFF2D7 ;  /* soft cream background */
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Navigation */
+nav {
+  display: flex;
+  align-items: center;
+  background-color: #F98866;  /* warm orange nav bar */
+  padding: 15px 30px;
+  box-shadow: 0 4px 8px rgba(249, 136, 102, 0.3);
+  border-radius: 0 0 15px 15px;
+}
+
+nav .logo {
+  height: 50px;
+  margin-right: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #FFF2D7; /* cream text */
+  font-weight: 700;
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 12px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+nav ul li a:hover,
+nav ul li a:focus {
+  background-color: #FFF2D7;  /* cream background on hover */
+  color: #F98866;             /* orange text on hover */
+  box-shadow: 0 0 8px #F98866;
+}
+
+/* Banner */
+.banner {
+  width: 100%;
+  max-height: 450px;
+  object-fit: cover;
+  margin-top: 20px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(249, 136, 102, 0.4);
+}
+
+/* Footer */
+footer {
+  background-color: #F98866;
+  color: #FFF2D7;
+  padding: 30px 15px;
+  text-align: center;
+  border-radius: 15px 15px 0 0;
+  margin-top: 40px;
+  box-shadow: 0 -4px 10px rgba(249, 136, 102, 0.5);
+}
+
+footer p {
+  font-size: 14px;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.social-icons a {
+  color: #FFF2D7;
+  margin: 0 15px;
+  font-size: 28px;
+  transition: color 0.3s ease, transform 0.3s ease;
+  display: inline-block;
+}
+
+.social-icons a:hover,
+.social-icons a:focus {
+  color: #FFF2D7;
+  text-shadow: 0 0 10px #FFF2D7;
+  transform: scale(1.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+
+  nav ul li a {
+    width: 100%;
+    text-align: center;
+  }
+
+  .banner {
+    max-height: 300px;
+  }
+}
+/* CSS for the video */
+video {
+  display: block;          /* Remove inline gap */
+  max-width: 100%;        /* Responsive: video won't exceed container width */
+  height: auto;           /* Maintain aspect ratio */
+  margin: 20px auto;      /* Center horizontally and add vertical spacing */
+  border-radius: 12px;    /* Rounded corners for aesthetic */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);  /* Soft shadow around video */
+  background-color: #000; /* fallback background while loading */
+  outline: none;          /* Remove default focus outline */
+  cursor: pointer;        /* Cursor indicates interactiveness */
+  transition: transform 0.3s ease;
+}
+
+video:hover {
+  transform: scale(1.02); /* Slight zoom on hover for subtle effect */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color:  #FFF2D7;
+}
+
+.footer {
+  background-color: #1a1a1a;
+  color: #fff;
+  padding: 40px 20px 20px;
+}
+
+.footer-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  border-bottom: 1px solid #444;
+  padding-bottom: 30px;
+}
+
+.footer-section {
+  flex: 1 1 200px;
+  margin: 10px;
+}
+
+.footer-section h4 {
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.footer-section p a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.footer-section p a:hover {
+  text-decoration: underline;
+}
+
+.learn-btn {
+  background-color: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.learn-btn:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+.app-links {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.app-icon {
+  height: 40px;
+  cursor: pointer;
+}
+
+.social-icons i {
+  font-size: 18px;
+  margin-right: 10px;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.social-icons i:hover {
+  color: #fff;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.footer-bottom a {
+  color: #aaa;
+  text-decoration: none;
+  margin: 0 4px;
+}
+
+.footer-bottom a:hover {
+  text-decoration: underline;
+}
+.footer-bottom p {
+  margin: 0;
+}
+.image-container {
+  position: relative;
+  width: 100%;
+}
+
+.banner {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.image-text {
+  position: absolute;
+  top: 30%;
+  left: 10%;
+  color: white;
+  background: rgba(0, 0, 0, 0.5); /* Optional background overlay */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.image-text h1 {
+  font-size: 36px;
+  margin: 0;
+}
+
+.image-text p {
+  font-size: 18px;
+  margin-top: 10px;
+}
+/* General body styles for better presentation */
+body {
+    margin: 0;
+    font-family: sans-serif; /* Or your preferred font */
+    background-color:  #FFF2D7;
+}
+
+/* Navigation Bar (Assuming you have basic styles already) */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color:#F98866;
+    padding: 10px 20px;
+    color: white;
+}
+nav .logo {
+    height: 70px; /* Adjust as needed */
+    width: 70px; /* Crucial: Make width equal to height for a perfect circle */
+    border-radius: 50%; /* This is the magic property for a circle */
+    object-fit: cover; /* Ensures the image fills the circle without distortion */
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    color: #050505; /* Example hover color */
+}
+
+
+/* Hero Section - THIS IS THE IMPORTANT PART FOR IMAGE OVERLAY */
+.hero-section {
+    position: relative; /* Essential for positioning child elements */
+    width: 100%;
+    max-height: 600px; /* Limit height to prevent image from being too tall */
+    overflow: hidden; /* Hide any overflow if image is larger */
+    display: flex; /* Helps center content vertically */
+    align-items: center; /* Vertically center the text */
+    justify-content: center; /* Horizontally center the text */
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%; /* Make image fill the container */
+    object-fit: cover; /* Ensures image covers the area without distortion */
+    filter: brightness(60%); /* Darken the image slightly for text readability */
+}
+
+.hero-text {
+    position: absolute; /* Position text relative to .hero-section */
+    text-align: center;
+    color: white; /* Text color */
+    padding: 20px;
+    max-width: 80%; /* Limit text width for better readability */
+    z-index: 1; /* Ensure text is above the image */
+}
+
+.hero-text h1 {
+    font-size: 3em; /* Adjust font size as needed */
+    margin-bottom: 15px;
+    line-height: 1.2;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Add subtle shadow for contrast */
+}
+
+.hero-text p {
+    font-size: 1.5em; /* Adjust font size as needed */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Video Section */
+video {
+    display: block; /* Removes extra space below video */
+    width: 100%;
+    height: auto;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #221f1f;
+    color: #eee;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap; /* Allow sections to wrap on smaller screens */
+    padding-bottom: 20px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 200px; /* Ensure sections don't get too narrow */
+    margin: 10px;
+}
+
+.footer-section h4 {
+    color: #ffd700; /* Accent color for headings */
+    margin-bottom: 10px;
+}
+
+.footer-section p {
+    margin: 5px 0;
+}
+
+.footer-section a {
+    color: #eee;
+    text-decoration: none;
+}
+
+.footer-section a:hover {
+    text-decoration: underline;
+}
+
+.social-icons a {
+    font-size: 24px;
+    margin: 0 10px;
+    color: #eee;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: #ffd700; /* Accent color on hover */
+}
+
+.footer-bottom {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #444;
+}
+
+.footer-bottom p {
+    margin: 5px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-text h1 {
+        font-size: 2em;
+    }
+    .hero-text p {
+        font-size: 1em;
+    }
+    .footer-top {
+        flex-direction: column;
+        align-items: center;
+    }
+    .footer-section {
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-text h1 {
+        font-size: 1.5em;
+    }
+    .hero-text p {
+        font-size: 0.9em;
+    }
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+    nav ul li {
+        margin: 5px 0;
+    }
+}
+.image-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  background: #fff2d7;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 40px auto;
+}
+
+.image-gallery img {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+  transition: transform 0.4s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.image-gallery img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+.image-gallery img:active {
+  transform: scale(0.98);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+/* --- Google Fonts Import --- */
+/* Add these links to the <head> section of your HTML file */
+/* <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"> */
+
+/* --- General Body & Container Styling (to match your screenshot background better) --- */
+body {
+    background-color: #FFF2D7; /* A light, neutral background */
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif; /* Default font for the body */
+    color: #333; /* Dark gray for readability */
+}
+
+.content {
+    background-color:#FFF2D7; /* White background for the content box */
+    max-width: 1000px; /* Slightly wider to accommodate text and centralize */
+    margin: 40px auto 20px auto; /* Top, center, and some space before images */
+    padding: 40px 50px; /* Generous padding */
+    border-radius: 12px; /* Slightly more rounded corners */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); /* Deeper, softer shadow */
+    text-align: center; /* Center align all text within the box */
+}
+
+/* --- Heading Styling --- */
+.content h2 {
+    font-family: 'Playfair Display', serif; /* Elegant serif for the main heading */
+    font-size: 3.5em; /* Significantly larger heading */
+    color: #2c3e50; /* Deep, professional blue-gray */
+    margin-bottom: 30px; /* More space below heading */
+    letter-spacing: -0.03em; /* Slightly tighter letter spacing */
+    line-height: 1.1; /* Tighter line height for large heading */
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.05); /* Very subtle shadow for depth */
+}
+
+/* --- Paragraph Styling --- */
+.content p {
+    font-size: 1.15em; /* Larger base font size for readability */
+    line-height: 1.8; /* Increased line height for better flow */
+    margin-bottom: 25px; /* Space between paragraphs */
+    color: #555; /* Softer text color */
+    max-width: 800px; /* Constrain paragraph width for optimal line length */
+    margin-left: auto;
+    margin-right: auto; /* Center individual paragraphs */
+    text-align: center; /* Ensure paragraphs are centered */
+}
+
+/* --- Call to Action / Final Welcome Styling --- */
+.content .call-to-action {
+    font-size: 1.3em; /* Larger for impact */
+    font-weight: 600; /* Semi-bold */
+    color: #e67e22; /* Warm, inviting accent color (e.g., orange/gold) */
+    margin-top: 40px; /* More space above the call to action */
+    margin-bottom: 0; /* No bottom margin */
+    line-height: 1.6; /* Good line height for multiple lines */
+}
+
+.content .call-to-action span {
+    display: block; /* Make "Welcome to Our Smart Restaurant." a new line */
+    font-size: 1.8em; /* Even larger for the final, strongest statement */
+    font-weight: 700; /* Boldest */
+    color: #c0392b; /* A strong, contrasting color (e.g., deep red) */
+    letter-spacing: 0.05em; /* Slightly spaced out */
+    margin-top: 15px; /* Space above the final line */
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1); /* Subtle shadow */
+}
+
+/* --- Responsive Adjustments (Optional but Recommended) --- */
+@media (max-width: 768px) {
+    .content {
+        margin: 20px auto;
+        padding: 30px;
+    }
+    .content h2 {
+        font-size: 2.5em;
+    }
+    .content p {
+        font-size: 1em;
+    }
+    .content .call-to-action {
+        font-size: 1.1em;
+    }
+    .content .call-to-action span {
+        font-size: 1.5em;
+    }
+}
+
+@media (max-width: 480px) {
+    .content {
+        padding: 20px;
+    }
+    .content h2 {
+        font-size: 2em;
+    }
+    .content p {
+        font-size: 0.95em;
+    }
+    .content .call-to-action {
+        font-size: 1em;
+    }
+    .content .call-to-action span {
+        font-size: 1.3em;
+    }
+}
+
+

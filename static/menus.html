@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Restaurant Menu</title>
+ <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to bottom right, #FFF2D7, #F98866);
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: #fff0e0;
+      border-bottom: 3px solid #F98866;
+    }
+
+    header img {
+      width: 100px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #D94F30;
+    }
+
+    .menu-section {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: #ffffffcc;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .menu-section h2 {
+      font-size: 1.8rem;
+      border-bottom: 2px solid #F98866;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+      color: #c74b2f;
+    }
+
+    .food-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.8rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px dashed #F98866;
+    }
+
+    .food-item:last-child {
+      border-bottom: none;
+    }
+
+    .food-name {
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      background: #fff0e0;
+      border-top: 3px solid #F98866;
+      color: #555;
+    }
+    
+    /* Responsive Design for Menu Page */
+    @media (max-width: 768px) {
+      header {
+        padding: 1.5rem 0.5rem;
+      }
+      
+      header img {
+        width: 80px;
+        margin-bottom: 0.5rem;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .menu-section {
+        margin: 1rem auto;
+        padding: 1.5rem;
+        max-width: 95%;
+      }
+      
+      .menu-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      
+      .food-item {
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 1rem 0;
+        padding-bottom: 0.8rem;
+      }
+      
+      .food-name {
+        margin-bottom: 0.3rem;
+        font-size: 1rem;
+      }
+      
+      .price {
+        font-size: 0.9rem;
+        color: #F98866;
+        font-weight: bold;
+      }
+      
+      footer {
+        padding: 1rem 0.5rem;
+        font-size: 0.8rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      header {
+        padding: 1rem 0.3rem;
+      }
+      
+      header img {
+        width: 60px;
+      }
+      
+      h1 {
+        font-size: 1.2rem;
+      }
+      
+      .menu-section {
+        margin: 0.5rem auto;
+        padding: 1rem;
+        max-width: 98%;
+      }
+      
+      .menu-section h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0.8rem;
+      }
+      
+      .food-item {
+        margin: 0.8rem 0;
+        padding-bottom: 0.6rem;
+      }
+      
+      .food-name {
+        font-size: 0.9rem;
+      }
+      
+      .price {
+        font-size: 0.8rem;
+      }
+      
+      footer {
+        padding: 0.8rem 0.3rem;
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+  
+</head>
+<body>
+  
+  <header>
+    <img src="logo.png" alt="Logo" />
+    <h1>A Smart Restaurant with Sentiment Analysis</h1>
+    
+  
+  </header>
+
+  <section class="menu-section">
+    <h2>Newari Cuisine</h2>
+    <div class="food-item"><span class="food-name">Yomari</span><span class="price">Rs. 120</span></div>
+    <div class="food-item"><span class="food-name">Chatamari</span><span class="price">Rs. 150</span></div>
+    <div class="food-item"><span class="food-name">Bara (Wo)</span><span class="price">Rs. 100</span></div>
+    <div class="food-item"><span class="food-name">Choila (Buff/Chicken)</span><span class="price">Rs. 180</span></div>
+    <div class="food-item"><span class="food-name">Samay Baji Set</span><span class="price">Rs. 300</span></div>
+    <div class="food-item"><span class="food-name">Sapu Mhicha</span><span class="price">Rs. 220</span></div>
+  </section>
+
+  <section class="menu-section">
+    <h2>Other Nepali Delicacies</h2>
+    <div class="food-item"><span class="food-name">Momo (Buff/Chicken/Veg)</span><span class="price">Rs. 130</span></div>
+    <div class="food-item"><span class="food-name">Thukpa</span><span class="price">Rs. 110</span></div>
+    <div class="food-item"><span class="food-name">Dal Bhat Tarkari</span><span class="price">Rs. 180</span></div>
+  </section>
+
+  <section class="menu-section">
+    <h2>Italian Cuisine</h2>
+    <div class="food-item"><span class="food-name">Margherita Pizza</span><span class="price">Rs. 350</span></div>
+    <div class="food-item"><span class="food-name">Spaghetti Carbonara</span><span class="price">Rs. 400</span></div>
+    <div class="food-item"><span class="food-name">Lasagna</span><span class="price">Rs. 420</span></div>
+    <div class="food-item"><span class="food-name">Penne Arrabbiata</span><span class="price">Rs. 300</span></div>
+  </section>
+
+  <section class="menu-section">
+    <h2>Indian Cuisine</h2>
+    <div class="food-item"><span class="food-name">Butter Chicken</span><span class="price">Rs. 350</span></div>
+    <div class="food-item"><span class="food-name">Paneer Tikka</span><span class="price">Rs. 300</span></div>
+    <div class="food-item"><span class="food-name">Biryani (Veg/Chicken)</span><span class="price">Rs. 320</span></div>
+    <div class="food-item"><span class="food-name">Naan / Garlic Naan</span><span class="price">Rs. 50 / 70</span></div>
+  </section>
+
+  <section class="menu-section">
+    <h2>Bakery</h2>
+    <div class="food-item"><span class="food-name">Chocolate Cake Slice</span><span class="price">Rs. 120</span></div>
+    <div class="food-item"><span class="food-name">Croissant</span><span class="price">Rs. 90</span></div>
+    <div class="food-item"><span class="food-name">Cinnamon Roll</span><span class="price">Rs. 110</span></div>
+    <div class="food-item"><span class="food-name">Muffins (Blueberry/Choco)</span><span class="price">Rs. 100</span></div>
+  </section>
+
+  <section class="menu-section">
+    <h2>Beverages</h2>
+    <div class="food-item"><span class="food-name">Espresso</span><span class="price">Rs. 80</span></div>
+    <div class="food-item"><span class="food-name">Cappuccino</span><span class="price">Rs. 120</span></div>
+    <div class="food-item"><span class="food-name">Masala Chai</span><span class="price">Rs. 60</span></div>
+    <div class="food-item"><span class="food-name">Lassi (Sweet/Salted)</span><span class="price">Rs. 70</span></div>
+    <div class="food-item"><span class="food-name">Fresh Juice (Seasonal)</span><span class="price">Rs. 100</span></div>
+  </section>
+
+  <footer>
+    © 2025 Smart Restaurant.
+  </footer>
+</body>
+</html>

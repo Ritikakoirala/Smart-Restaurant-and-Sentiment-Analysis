@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - Smart Restaurant</title>
+  <link rel="stylesheet" href="contact.css" />
+  <style>
+    body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #F98866;
+  margin: 0;
+  padding: 0;
+}
+
+.contact-section {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #FFF2D7;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.contact-section h1 {
+  color: #FFF2D7;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.contact-section p {
+  color: #333;
+  font-size: 1.1em;
+  margin-bottom: 20px;
+}
+
+.qr-box img {
+  width: 200px;
+  height: auto;
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+.qr-box img:hover {
+  transform: scale(1.05);
+}
+
+.qr-box p {
+  margin-top: 10px;
+  color: #888;
+}
+
+.details {
+  margin-top: 30px;
+  font-size: 1em;
+  color: #444;
+}
+
+.details h2 {
+  color: #F98866;
+  margin-bottom: 10px;
+}
+
+/* Responsive Design for Contact Page */
+@media (max-width: 768px) {
+  .contact-section {
+    margin: 20px auto;
+    padding: 25px 20px;
+    max-width: 95%;
+  }
+  
+  .contact-section h1 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+  }
+  
+  .contact-section p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  
+  .qr-box img {
+    width: 180px;
+  }
+  
+  .details {
+    margin-top: 25px;
+    font-size: 0.95rem;
+  }
+  
+  .details h2 {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+  }
+  
+  .details p {
+    margin: 8px 0;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px 5px;
+  }
+  
+  .contact-section {
+    margin: 15px auto;
+    padding: 20px 15px;
+    max-width: 98%;
+    border-radius: 15px;
+  }
+  
+  .contact-section h1 {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+  }
+  
+  .contact-section p {
+    font-size: 0.9rem;
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
+  
+  .qr-box img {
+    width: 160px;
+  }
+  
+  .qr-box p {
+    font-size: 0.85rem;
+    margin-top: 8px;
+  }
+  
+  .details {
+    margin-top: 20px;
+    font-size: 0.85rem;
+  }
+  
+  .details h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .details p {
+    margin: 6px 0;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .contact-section {
+    margin: 10px auto;
+    padding: 15px 10px;
+  }
+  
+  .contact-section h1 {
+    font-size: 1.5rem;
+  }
+  
+  .qr-box img {
+    width: 140px;
+  }
+  
+  .details h2 {
+    font-size: 1.1rem;
+  }
+  
+  .details p {
+    font-size: 0.75rem;
+  }
+}
+
+  </style>
+
+<body>
+ <div class="contact-section">
+     <h1>Contact Us</h1>
+    <p>If your order is delayed or you have any concerns, feel free to reach out to us instantly by scanning the QR below.</p>
+    
+    <div class="qr-box">
+      <a href="https://wa.me/yourwhatsapplink" target="_blank">
+        <img src="qrimage.png" alt="Scan to Contact" />
+      </a>
+      <p>Scan to contact</p>
+    </div>
+
+    <div class="details">
+      <h2>Smart Restaurant</h2>
+      <p>Email: @smartrestaurant.com</p>
+      <p>Name: Ritika Koirala</p>
+      <p>Address: Jhapa, Nepal</p>
+    </div>
+  </div>
+</body>
+</html>
