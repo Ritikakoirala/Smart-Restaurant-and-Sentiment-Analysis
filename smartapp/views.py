@@ -1,10 +1,15 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib import messages
+from django.utils import timezone
+from django.db.models import Count, Q
 import json
 import uuid
-from .models import Order, OrderItem, FoodItem, Feedback, DiscountVoucher
+from .models import Order, OrderItem, FoodItem, Feedback, DiscountVoucher, Admin, KDS, AllergyInfo
 from .sentiment_analysis import SentimentAnalyzer
 import logging
 
@@ -19,7 +24,9 @@ def menus(request):
     return render(request, 'menus.html')
 
 def order(request):
-    return render(request, 'order.html')
+    food_items = FoodItem.objects.all()
+    categories = FoodItem.objects.values_list('category', flat=True).distinct()
+    return render(request, 'order.html', {'food_items': food_items, 'categories': categories})
 
 def feedback_page(request):
     return render(request, 'feedback.html')
@@ -147,6 +154,7 @@ def submit_order(request):
             ordered_by = data.get('ordered_by', name)  # Use name if ordered_by not provided
             table = data.get('table')
             cart = data.get('cart', [])
+            allergy = data.get('allergy', '').strip()
             
             logger.info(f"Received order: name={name}, ordered_by={ordered_by}, table={table}, cart={cart}")
             
@@ -158,7 +166,7 @@ def submit_order(request):
             total_amount = 0
             item_count = 0
             for item in cart:
-                quantity = item.get('qty', 1)
+                quantity = item.get('quantity', 1)
                 price = item.get('price', 0)
                 total_amount += quantity * price
                 item_count += quantity
@@ -170,7 +178,7 @@ def submit_order(request):
             
             # Create the main order
             # Set food_item to a summary of items, e.g., first item or comma-separated
-            food_item_summary = ', '.join([f"{item['name']} x{item['qty']}" for item in cart[:3]])  # First 3 items
+            food_item_summary = ', '.join([f"{item['name']} x{item['quantity']}" for item in cart[:3]])  # First 3 items
             if len(cart) > 3:
                 food_item_summary += f" +{len(cart)-3} more"
             order = Order.objects.create(
@@ -186,10 +194,10 @@ def submit_order(request):
             # Create individual order items
             for item in cart:
                 item_name = item.get('name')
-                quantity = item.get('qty', 1)
+                quantity = item.get('quantity', 1)
                 unit_price = item.get('price', 0)
                 category = item.get('category', 'General')
-                
+
                 OrderItem.objects.create(
                     order=order,
                     item_name=item_name,
@@ -198,8 +206,12 @@ def submit_order(request):
                     category=category
                 )
             
+            # Save allergy info if provided
+            if allergy:
+                AllergyInfo.objects.create(order=order, allergy_type=allergy)
+
             logger.info(f"Order created: {order} with {len(cart)} items")
-            
+
             return JsonResponse({
                 'message': 'Order placed successfully',
                 'order_id': order.id,
@@ -280,11 +292,170 @@ def order_success(request):
 def feedback_success(request):
     # Render the template with session data
     response = render(request, 'feedback_success.html')
-    
+
     # Clear session data after rendering
     if 'voucher_code' in request.session:
         del request.session['voucher_code']
     if 'is_negative_feedback' in request.session:
         del request.session['is_negative_feedback']
-    
+
     return response
+
+
+def admin_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None and user.is_staff:
+            login(request, user)
+            return redirect('admin_dashboard')
+        else:
+            messages.error(request, 'Invalid credentials or not an admin user.')
+    return render(request, 'admin_login.html')
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_dashboard(request):
+    now = timezone.now()
+    total_orders = Order.objects.count()
+    pending_orders = Order.objects.filter(status='pending').count()
+    ready_orders = Order.objects.filter(status='ready').count()
+
+    # Delayed orders: pending and time exceeded
+    delayed_orders = 0
+    for order in Order.objects.filter(status='pending'):
+        elapsed = (now - order.order_time).total_seconds() / 60  # minutes
+        if elapsed > order.estimated_wait_time:
+            delayed_orders += 1
+
+    context = {
+        'total_orders': total_orders,
+        'pending_orders': pending_orders,
+        'delayed_orders': delayed_orders,
+        'ready_orders': ready_orders,
+    }
+    return render(request, 'admin_dashboard.html', context)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_orders(request):
+    orders = Order.objects.all().order_by('-order_time')
+    now = timezone.now()
+    orders_with_pending = []
+    for order in orders:
+        elapsed = (now - order.order_time).total_seconds() / 60
+        is_delayed = elapsed > order.estimated_wait_time and order.status == 'pending'
+        orders_with_pending.append({
+            'order': order,
+            'pending_time': int(elapsed),
+            'is_delayed': is_delayed,
+        })
+    return render(request, 'admin_orders.html', {'orders_with_pending': orders_with_pending})
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    items = order.items.all()
+    allergies = order.allergies.all()
+    now = timezone.now()
+    elapsed = (now - order.order_time).total_seconds() / 60
+    pending_time = int(elapsed)
+    is_delayed = elapsed > order.estimated_wait_time and order.status == 'pending'
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'send_to_kitchen':
+            order.status = 'preparing'
+            order.save()
+            KDS.objects.get_or_create(order=order, defaults={'kitchen_status': 'Preparing'})
+        elif action == 'mark_completed':
+            order.status = 'completed'
+            order.save()
+            kds, created = KDS.objects.get_or_create(order=order)
+            kds.kitchen_status = 'Ready'
+            kds.ready_time = timezone.now()
+            kds.save()
+        return redirect('admin_order_detail', order_id=order_id)
+
+    return render(request, 'admin_order_detail.html', {
+        'order': order,
+        'items': items,
+        'allergies': allergies,
+        'pending_time': pending_time,
+        'is_delayed': is_delayed,
+    })
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_kds(request):
+    kds_orders = KDS.objects.select_related('order').all()
+    now = timezone.now()
+    kds_with_time = []
+    for kds in kds_orders:
+        elapsed = (now - kds.order.order_time).total_seconds() / 60
+        is_delayed = elapsed > kds.order.estimated_wait_time
+        kds_with_time.append({
+            'kds': kds,
+            'elapsed_time': int(elapsed),
+            'is_delayed': is_delayed,
+        })
+
+    # Sort: delayed first, then by order time ascending
+    kds_with_time.sort(key=lambda x: (not x['is_delayed'], x['kds'].order.order_time))
+
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        action = request.POST.get('action')
+        order = get_object_or_404(Order, id=order_id)
+        kds, created = KDS.objects.get_or_create(order=order)
+        if action == 'start_cooking':
+            kds.kitchen_status = 'Preparing'
+            kds.start_time = timezone.now()
+            kds.save()
+        elif action == 'mark_ready':
+            kds.kitchen_status = 'Ready'
+            kds.ready_time = timezone.now()
+            kds.save()
+            order.status = 'ready'
+            order.save()
+        return redirect('admin_kds')
+
+    return render(request, 'admin_kds.html', {'kds_with_time': kds_with_time})
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def admin_feedback(request):
+    feedbacks = Feedback.objects.select_related('order').all().order_by('-created_at')
+    positive_count = feedbacks.filter(sentiment='positive').count()
+    negative_count = feedbacks.filter(sentiment='negative').count()
+    neutral_count = feedbacks.filter(sentiment='neutral').count()
+
+    emotion_counts = feedbacks.values('emotion').annotate(count=Count('emotion')).order_by('-count')
+
+    return render(request, 'admin_feedback.html', {
+        'feedbacks': feedbacks,
+        'positive_count': positive_count,
+        'negative_count': negative_count,
+        'neutral_count': neutral_count,
+        'emotion_counts': emotion_counts,
+    })
+
+
+def admin_logout(request):
+    logout(request)
+    return redirect('admin_login')
+
+
+def admin_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if 'admin_id' not in request.session:
+            return redirect('admin_login')
+        return view_func(request, *args, **kwargs)
+    return wrapper

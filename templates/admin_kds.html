@@ -1,0 +1,192 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Kitchen Display System{% endblock %}
+
+{% block content %}
+    <h2>Kitchen Display System</h2>
+
+    <div class="filters">
+        <button onclick="filterOrders('all')">All Orders</button>
+        <button onclick="filterOrders('new')">New Orders</button>
+        <button onclick="filterOrders('preparing')">Preparing</button>
+        <button onclick="filterOrders('ready')">Ready</button>
+    </div>
+
+    <div class="kds-cards" id="kds-cards">
+        {% for item in kds_with_time %}
+            <div class="kds-card {% if item.kds.order.allergies.all %}allergy{% endif %} {% if item.elapsed_time > item.kds.order.estimated_wait_time %}delayed{% endif %}" data-status="{{ item.kds.kitchen_status }}">
+                <div class="card-header">
+                    <h3>Order #{{ item.kds.order.id }}</h3>
+                    <span class="table-number">Table {{ item.kds.order.table_number }}</span>
+                </div>
+                <div class="order-time">Order Time: {{ item.kds.order.order_time|date:"H:i" }}</div>
+                <div class="elapsed-time {% if item.elapsed_time > item.kds.order.estimated_wait_time %}delayed-text{% endif %}">
+                    Elapsed: {{ item.elapsed_time }} min
+                    {% if item.elapsed_time > item.kds.order.estimated_wait_time %}
+                        <span class="delayed-label">⏱ Delayed</span>
+                    {% endif %}
+                </div>
+                <div class="food-items">
+                    <strong>Items:</strong>
+                    <ul>
+                        {% for order_item in item.kds.order.items.all %}
+                            <li>{{ order_item.quantity }}x {{ order_item.item_name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% if item.kds.order.allergies.all %}
+                    <div class="allergy-alert">
+                        ⚠️ ALLERGY ALERT: {% for allergy in item.kds.order.allergies.all %}{{ allergy.allergy_type }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                    </div>
+                {% endif %}
+                <div class="status">Status: {{ item.kds.kitchen_status }}</div>
+                <form method="post" class="action-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="order_id" value="{{ item.kds.order.id }}">
+                    {% if item.kds.kitchen_status == 'Preparing' %}
+                        <button type="submit" name="action" value="mark_ready" class="btn-ready">Mark Ready</button>
+                    {% else %}
+                        <button type="submit" name="action" value="start_cooking" class="btn-start">Start Cooking</button>
+                    {% endif %}
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function filterOrders(status) {
+            const cards = document.querySelectorAll('.kds-card');
+            cards.forEach(card => {
+                if (status === 'all') {
+                    card.style.display = 'block';
+                } else if (status === 'new' && card.dataset.status === 'Preparing') {
+                    card.style.display = 'block';
+                } else if (card.dataset.status.toLowerCase() === status) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        setTimeout(function() {
+            location.reload();
+        }, 10000); // Refresh every 10 seconds
+    </script>
+
+    <style>
+        .filters {
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .filters button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            flex: 1;
+            min-width: 120px;
+        }
+        .filters button:hover {
+            background-color: #0056b3;
+        }
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+            }
+            .filters button {
+                width: 100%;
+            }
+        }
+        .kds-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .kds-card {
+            border: 2px solid #ddd;
+            padding: 1.5rem;
+            width: 350px;
+            background: white;
+            border-radius: 8px;
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        @media (max-width: 768px) {
+            .kds-card {
+                width: 100%;
+            }
+        }
+        .kds-card.allergy {
+            border-color: #dc3545;
+            border-width: 3px;
+        }
+        .kds-card.delayed {
+            border-color: #ffc107;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .card-header h3 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .table-number {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .order-time, .elapsed-time, .food-items, .status {
+            margin-bottom: 10px;
+        }
+        .delayed-text {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .delayed-label {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .allergy-alert {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .action-form {
+            margin-top: 15px;
+        }
+        .btn-start, .btn-ready {
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-start {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-ready {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-start:hover {
+            background-color: #218838;
+        }
+        .btn-ready:hover {
+            background-color: #0056b3;
+        }
+    </style>
+{% endblock %}

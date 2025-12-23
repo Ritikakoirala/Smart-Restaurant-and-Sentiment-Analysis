@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User  # Django's built-in user
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.hashers import make_password, check_password
 
 class FoodItem(models.Model):
     name = models.CharField(max_length=100)
@@ -67,11 +68,13 @@ class Feedback(models.Model):
     ]
 
     customer_name = models.CharField(max_length=100)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True, related_name='feedbacks')
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='Food')
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], default=3)
     feedback_text = models.TextField()
     sentiment = models.CharField(max_length=10, choices=SENTIMENT_CHOICES, blank=True, null=True)
     confidence = models.FloatField(blank=True, null=True)
+    emotion = models.CharField(max_length=20, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -96,3 +99,43 @@ class DiscountVoucher(models.Model):
     
     def __str__(self):
         return f"Voucher {self.voucher_code} for {self.customer_name} ({self.discount_percentage}% off)"
+
+
+class Admin(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)  # hashed
+    role = models.CharField(max_length=50, default='admin')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def set_password(self, raw_password):
+        self.password = make_password(raw_password)
+
+    def check_password(self, raw_password):
+        return check_password(raw_password, self.password)
+
+    def __str__(self):
+        return f"{self.name} ({self.email})"
+
+
+class KDS(models.Model):
+    STATUS_CHOICES = [
+        ('Preparing', 'Preparing'),
+        ('Ready', 'Ready'),
+    ]
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='kds')
+    kitchen_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Preparing')
+    start_time = models.DateTimeField(null=True, blank=True)
+    ready_time = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"KDS for Order #{self.order.id} - {self.kitchen_status}"
+
+
+class AllergyInfo(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='allergies')
+    allergy_type = models.CharField(max_length=100)  # e.g., Nuts, Dairy
+    notes = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Allergy: {self.allergy_type} for Order #{self.order.id}"

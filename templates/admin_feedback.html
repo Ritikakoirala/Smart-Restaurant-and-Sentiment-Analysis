@@ -1,0 +1,85 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Feedback & Sentiment{% endblock %}
+
+{% block content %}
+    <h2>Feedback & Sentiment Analysis</h2>
+
+    <div class="summary">
+        <div class="summary-item">
+            <h3>Positive Feedback</h3>
+            <p>{{ positive_count }}</p>
+        </div>
+        <div class="summary-item">
+            <h3>Negative Feedback</h3>
+            <p>{{ negative_count }}</p>
+        </div>
+        <div class="summary-item">
+            <h3>Neutral Feedback</h3>
+            <p>{{ neutral_count }}</p>
+        </div>
+    </div>
+
+    <h3>Emotion Distribution</h3>
+    <ul>
+        {% for emotion in emotion_counts %}
+            <li>{{ emotion.emotion }}: {{ emotion.count }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>All Feedback</h3>
+    <div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Feedback</th>
+                <th>Sentiment</th>
+                <th>Emotion</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for feedback in feedbacks %}
+                <tr>
+                    <td>{{ feedback.order.id|default:"N/A" }}</td>
+                    <td>{{ feedback.customer_name }}</td>
+                    <td>{{ feedback.feedback_text }}</td>
+                    <td>{{ feedback.sentiment }}</td>
+                    <td>{{ feedback.emotion }}</td>
+                    <td>{{ feedback.created_at|date:"Y-m-d H:i" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+    <style>
+        .summary {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .summary-item {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            text-align: center;
+            flex: 1;
+            border-radius: 8px;
+        }
+        @media (max-width: 768px) {
+            .summary {
+                flex-direction: column;
+            }
+            .summary-item {
+                min-width: 100%;
+            }
+        }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; white-space: nowrap; }
+        th { background-color: #f2f2f2; }
+    </style>
+{% endblock %}

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #F98866;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .main-content {
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #F98866;;
+            color: white;
+            padding: 1rem;
+            height: calc(100vh - 80px);
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar li {
+            margin-bottom: 1rem;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        .sidebar a:hover {
+            background-color: #555;
+        }
+        .container {
+            flex: 1;
+            max-width: none;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .logout {
+            text-align: right;
+            margin-bottom: 1rem;
+        }
+        .logout a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .logout a:hover {
+            text-decoration: underline;
+        }
+        .summary-cards {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            flex: 1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card h3 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+        }
+        .card p {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #007bff;
+            margin: 0;
+        }
+        /* Hamburger Menu */
+        .sidebar-toggle {
+            display: none;
+        }
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 10px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+            .sidebar {
+                position: fixed;
+                left: -200px;
+                top: 80px;
+                height: calc(100vh - 80px);
+                z-index: 1000;
+                transition: left 0.3s;
+            }
+            #sidebar-toggle:checked ~ .main-content .sidebar {
+                left: 0;
+            }
+            .main-content {
+                flex-direction: column;
+            }
+            .container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle">
+    <div class="header">
+        <label for="sidebar-toggle" class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+        <h1>Smart Restaurant Admin Panel</h1>
+    </div>
+    <div class="main-content">
+        <nav class="sidebar">
+            <ul>
+                <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'admin_orders' %}">Orders</a></li>
+                <li><a href="{% url 'admin_kds' %}">Kitchen Display System</a></li>
+                <li><a href="{% url 'admin_feedback' %}">Feedback & Sentiment</a></li>
+                <li><a href="{% url 'admin_logout' %}">Logout</a></li>
+            </ul>
+        </nav>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <div class="logout">
+        <a href="{% url 'admin_logout' %}">Logout</a>
+    </div>
+    <h2>Welcome to Admin Dashboard</h2>
+    <p>You are logged in as {{ user.username }}.</p>
+
+    <div class="summary-cards">
+        <div class="card">
+            <h3>Total Orders</h3>
+            <p>{{ total_orders }}</p>
+        </div>
+        <div class="card">
+            <h3>Pending Orders</h3>
+            <p>{{ pending_orders }}</p>
+        </div>
+        <div class="card">
+            <h3>Delayed Orders</h3>
+            <p>{{ delayed_orders }}</p>
+        </div>
+        <div class="card">
+            <h3>Ready Orders</h3>
+            <p>{{ ready_orders }}</p>
+        </div>
+    </div>
+    <style>
+        @media (max-width: 768px) {
+            .summary-cards {
+                flex-direction: column;
+            }
+            .card {
+                min-width: 100%;
+            }
+        }
+    </style>
+{% endblock %}

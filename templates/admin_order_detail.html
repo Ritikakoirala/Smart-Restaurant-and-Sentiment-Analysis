@@ -1,0 +1,49 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Order Detail{% endblock %}
+
+{% block content %}
+    <h2>Order #{{ order.id }} Details</h2>
+    <p><strong>Table Number:</strong> {{ order.table_number }}</p>
+    <p><strong>Customer:</strong> {{ order.customer_name }}</p>
+    <p><strong>Order Time:</strong> {{ order.order_time }}</p>
+    <p><strong>Estimated Time:</strong> {{ order.estimated_wait_time }} min</p>
+    <p><strong>Pending Time:</strong> {{ pending_time }} min {% if is_delayed %}(Delayed){% endif %}</p>
+    <p><strong>Status:</strong> {{ order.status }}</p>
+
+    <h3>Items</h3>
+    <ul>
+        {% for item in items %}
+            <li>{{ item.quantity }}x {{ item.item_name }} - ${{ item.total_price }}</li>
+        {% endfor %}
+    </ul>
+
+    {% if allergies %}
+        <h3>Allergies</h3>
+        <div class="allergy-alert">
+            {% for allergy in allergies %}
+                <p><strong>{{ allergy.allergy_type }}</strong>: {{ allergy.notes }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {% if order.status == 'pending' %}
+            <button type="submit" name="action" value="send_to_kitchen">Send to Kitchen</button>
+        {% endif %}
+        {% if order.status == 'preparing' %}
+            <button type="submit" name="action" value="mark_completed">Mark Completed</button>
+        {% endif %}
+    </form>
+
+    <style>
+        .allergy-alert {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 4px;
+            color: #721c24;
+        }
+    </style>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Orders Management{% endblock %}
+
+{% block content %}
+    <h2>Orders Management</h2>
+    <div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Table Number</th>
+                <th>Order Items</th>
+                <th>Order Time</th>
+                <th>Estimated Time</th>
+                <th>Pending Time</th>
+                <th>Status</th>
+                <th>Allergies</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in orders_with_pending %}
+                <tr class="{% if item.is_delayed %}delayed{% elif item.order.status == 'pending' %}pending{% endif %}">
+                    <td>{{ item.order.id }}</td>
+                    <td>{{ item.order.table_number }}</td>
+                    <td>{{ item.order.get_items }}</td>
+                    <td>{{ item.order.order_time|date:"H:i" }}</td>
+                    <td>{{ item.order.estimated_wait_time }} min</td>
+                    <td>{{ item.pending_time }} min</td>
+                    <td>{{ item.order.status }}</td>
+                    <td>
+                        {% for allergy in item.order.allergies.all %}
+                            <span class="allergy">{{ allergy.allergy_type }}</span>
+                        {% endfor %}
+                    </td>
+                    <td><a href="{% url 'admin_order_detail' item.order.id %}">View</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <style>
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; white-space: nowrap; }
+        th { background-color: #f2f2f2; }
+        .pending { background-color: #fff3cd; }
+        .delayed { background-color: #f8d7da; }
+        .allergy { background-color: #dc3545; color: white; padding: 2px 4px; margin: 2px; border-radius: 4px; }
+    </style>
+{% endblock %}

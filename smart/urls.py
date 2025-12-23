@@ -23,9 +23,9 @@ from smartapp.views import home
 
 urlpatterns = [
     path('', home, name='home'),
-    path('admin/', admin.site.urls),
+    path('django-admin/', admin.site.urls),
     path('', include('smartapp.urls')),
-    
+
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
