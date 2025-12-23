@@ -532,7 +532,7 @@
 <script>
   const menu = [
     {% for item in food_items %}
-    { name: "{{ item.name }}", price: {{ item.price }}, category: "{{ item.category }}", img: "" },
+    { name: "{{ item.name }}", price: {{ item.price }}, category: "{{ item.category }}", img: "{{ item.img }}" },
     {% endfor %}
   ];
 
