@@ -63,6 +63,4 @@ A Smart Restaurant Web Application built using Django, HTML, CSS, and JavaScript
    *Positive
     *Neutral
     *Negative
-    *Emotion tagging
-
-*Helps improve service quality
+    
