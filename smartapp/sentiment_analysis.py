@@ -1,77 +1,76 @@
 """
 Sentiment Analysis Module for Restaurant Feedback
-Provides RNN-based sentiment analysis functionality for customer feedback
-Uses trained LSTM model for sentiment classification (no fallback)
+Provides ML-based sentiment analysis functionality for customer feedback
+Uses trained Logistic Regression model with TF-IDF features
 """
 
 import os
 import re
-import numpy as np
 import pickle
 from django.conf import settings
 
-# Try to import TensorFlow - required for model-based analysis
+# Try to import sklearn - required for model-based analysis
 try:
-    from tensorflow.keras.models import load_model
-    TENSORFLOW_AVAILABLE = True
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.linear_model import LogisticRegression
+    SKLEARN_AVAILABLE = True
 except ImportError:
-    TENSORFLOW_AVAILABLE = False
-    print("Warning: TensorFlow not installed. Install with: pip install tensorflow")
+    SKLEARN_AVAILABLE = False
+    print("Warning: scikit-learn not installed. Install with: pip install scikit-learn")
+
 
 class SentimentAnalyzer:
     """
-    RNN-based sentiment analyzer for restaurant feedback
-    Uses trained LSTM model for sentiment classification
+    ML-based sentiment analyzer for restaurant feedback
+    Uses trained Logistic Regression model with TF-IDF features
     """
 
     _model = None
-    _word_index = None
-    _label_encoder = None
-    _max_length = 200  # Must match training max_length
-    _max_features = 5000  # Must match training max_features
+    _vectorizer = None
+    _model_loaded = False
 
     @classmethod
     def _load_model(cls):
-        """Load the trained model and preprocessing objects"""
-        if cls._model is None:
-            if not TENSORFLOW_AVAILABLE:
-                raise RuntimeError(
-                    "TensorFlow is not installed. The trained LSTM model requires TensorFlow. "
-                    "Please install it with: pip install tensorflow"
-                )
-            
-            try:
-                model_path = os.path.join(settings.BASE_DIR, 'smartapp', 'sentiment_model.h5')
-                word_index_path = os.path.join(settings.BASE_DIR, 'smartapp', 'word_index.pkl')
-                label_encoder_path = os.path.join(settings.BASE_DIR, 'smartapp', 'label_encoder.pkl')
+        """Load the trained model and vectorizer"""
+        if cls._model_loaded:
+            return
 
-                # Load the trained model
-                cls._model = load_model(model_path)
+        if not SKLEARN_AVAILABLE:
+            raise RuntimeError(
+                "scikit-learn is not installed. The sentiment model requires scikit-learn. "
+                "Please install it with: pip install scikit-learn"
+            )
 
-                # Load word index for text preprocessing
-                with open(word_index_path, 'rb') as f:
-                    cls._word_index = pickle.load(f)
+        try:
+            model_path = os.path.join(
+                settings.BASE_DIR, 'smartapp', 'sentiment_model.pkl')
+            vectorizer_path = os.path.join(
+                settings.BASE_DIR, 'smartapp', 'sentiment_vectorizer.pkl')
 
-                # Load label encoder for decoding predictions
-                with open(label_encoder_path, 'rb') as f:
-                    cls._label_encoder = pickle.load(f)
+            # Load the trained model
+            with open(model_path, 'rb') as f:
+                cls._model = pickle.load(f)
 
-                print(f"Model loaded successfully from {model_path}")
-                print(f"Vocabulary size: {len(cls._word_index)}")
-                print(f"Label classes: {cls._label_encoder.classes_}")
+            # Load the vectorizer
+            with open(vectorizer_path, 'rb') as f:
+                cls._vectorizer = pickle.load(f)
 
-            except FileNotFoundError as e:
-                raise RuntimeError(
-                    f"Model file not found: {e}. "
-                    "Please run 'python smartapp/export_model.py' to train and export the model."
-                )
-            except Exception as e:
-                raise RuntimeError(f"Error loading model: {e}")
+            cls._model_loaded = True
+            print(f"Model loaded successfully from {model_path}")
+            print(f"Vectorizer vocabulary size: {len(cls._vectorizer.vocabulary_)}")
+
+        except FileNotFoundError as e:
+            raise RuntimeError(
+                f"Model file not found: {e}. "
+                "Please run 'python smartapp/export_model.py' to train and export the model."
+            )
+        except Exception as e:
+            raise RuntimeError(f"Error loading model: {e}")
 
     @classmethod
     def analyze_sentiment(cls, text):
         """
-        Analyze sentiment of given text using trained RNN model
+        Analyze sentiment of given text using trained model
 
         Args:
             text (str): The feedback text to analyze
@@ -90,24 +89,15 @@ class SentimentAnalyzer:
             text = text.lower().strip()
             text = re.sub(r'[^\w\s]', '', text)
 
-            # Convert to sequence using word_index
-            words = text.split()
-            sequence_list = [cls._word_index.get(word, 0) for word in words]
+            # Convert to TF-IDF features
+            text_tfidf = cls._vectorizer.transform([text])
 
-            # Pad/truncate sequence to max_length
-            if len(sequence_list) < cls._max_length:
-                sequence_list = [0] * (cls._max_length - len(sequence_list)) + sequence_list
-            else:
-                sequence_list = sequence_list[:cls._max_length]
+            # Predict
+            sentiment = cls._model.predict(text_tfidf)[0]
 
-            # Make prediction
-            sequence_array = np.array([sequence_list])
-            predictions = cls._model.predict(sequence_array, verbose=0)[0]
-            predicted_class = np.argmax(predictions)
-            confidence = float(predictions[predicted_class] * 100)
-
-            # Get sentiment label
-            sentiment = cls._label_encoder.inverse_transform([predicted_class])[0]
+            # Get confidence
+            proba = cls._model.predict_proba(text_tfidf)[0]
+            confidence = float(max(proba) * 100)
 
             # Convert to score (-1 to 1 range)
             if sentiment == 'positive':
@@ -124,8 +114,7 @@ class SentimentAnalyzer:
             }
 
         except Exception as e:
-            print(f"Error in RNN analysis: {e}")
-            # Raise error instead of falling back - we want to use the model
+            print(f"Error in sentiment analysis: {e}")
             raise RuntimeError(f"Sentiment analysis failed: {str(e)}")
 
     @classmethod
