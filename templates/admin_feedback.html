@@ -23,7 +23,9 @@
     <h3>Emotion Distribution</h3>
     <ul>
         {% for emotion in emotion_counts %}
-            <li>{{ emotion.emotion }}: {{ emotion.count }}</li>
+            <li>{{ emotion.emotion|default:"Unknown" }}: {{ emotion.count }}</li>
+        {% empty %}
+            <li>No emotion data available</li>
         {% endfor %}
     </ul>
 
@@ -46,9 +48,13 @@
                     <td>{{ feedback.order.id|default:"N/A" }}</td>
                     <td>{{ feedback.customer_name }}</td>
                     <td>{{ feedback.feedback_text }}</td>
-                    <td>{{ feedback.sentiment }}</td>
-                    <td>{{ feedback.emotion }}</td>
+                    <td>{{ feedback.sentiment|default:"Pending" }}</td>
+                    <td>{{ feedback.emotion|default:"-" }}</td>
                     <td>{{ feedback.created_at|date:"Y-m-d H:i" }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center;">No feedback available</td>
                 </tr>
             {% endfor %}
         </tbody>
