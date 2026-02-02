@@ -8,7 +8,6 @@ import pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
 
 # Load and preprocess data
 data = pd.read_csv('smartapp/swiggy.csv')
@@ -18,6 +17,7 @@ print(f"Loaded {len(data)} records from swiggy.csv")
 data["Review"] = data["Review"].str.lower()
 data["Review"] = data["Review"].replace(r'[^a-z0-9\s]', '', regex=True)
 
+
 def label_sentiment_num(rating):
     if rating <= 2.5:
         return "negative"
@@ -25,6 +25,7 @@ def label_sentiment_num(rating):
         return "neutral"
     else:
         return "positive"
+
 
 data['sentiment'] = data['Avg Rating'].apply(label_sentiment_num)
 data = data.dropna()

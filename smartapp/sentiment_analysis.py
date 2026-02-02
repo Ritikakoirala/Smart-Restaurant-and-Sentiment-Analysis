@@ -11,12 +11,12 @@ from django.conf import settings
 
 # Try to import sklearn - required for model-based analysis
 try:
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.linear_model import LogisticRegression
+    import sklearn.feature_extraction.text
     SKLEARN_AVAILABLE = True
 except ImportError:
     SKLEARN_AVAILABLE = False
-    print("Warning: scikit-learn not installed. Install with: pip install scikit-learn")
+    print("Warning: scikit-learn not installed. "
+          "Install with: pip install scikit-learn")
 
 
 class SentimentAnalyzer:
@@ -37,7 +37,8 @@ class SentimentAnalyzer:
 
         if not SKLEARN_AVAILABLE:
             raise RuntimeError(
-                "scikit-learn is not installed. The sentiment model requires scikit-learn. "
+                "scikit-learn is not installed. "
+                "The sentiment model requires scikit-learn. "
                 "Please install it with: pip install scikit-learn"
             )
 
@@ -57,12 +58,14 @@ class SentimentAnalyzer:
 
             cls._model_loaded = True
             print(f"Model loaded successfully from {model_path}")
-            print(f"Vectorizer vocabulary size: {len(cls._vectorizer.vocabulary_)}")
+            vocab_size = len(cls._vectorizer.vocabulary_)
+            print(f"Vectorizer vocabulary size: {vocab_size}")
 
         except FileNotFoundError as e:
             raise RuntimeError(
                 f"Model file not found: {e}. "
-                "Please run 'python smartapp/export_model.py' to train and export the model."
+                "Please run 'python smartapp/export_model.py' to "
+                "train and export the model."
             )
         except Exception as e:
             raise RuntimeError(f"Error loading model: {e}")
