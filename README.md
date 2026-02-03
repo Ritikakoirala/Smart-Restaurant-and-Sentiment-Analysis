@@ -2,7 +2,6 @@
 
 A Smart Restaurant Web Application built using Django, HTML, CSS, and JavaScript that enables customers to place food orders, specify allergy information,Recurrent Neural Network (RNN) for customer sentiment analysis, and provide feedback, while allowing admins and kitchen staff to manage orders efficiently through a custom admin dashboard and Kitchen Display System (KDS) with sentiment analysis support.
 
-
 📌 Key Highlights
 
 ✔ RNN-based sentiment analysis
