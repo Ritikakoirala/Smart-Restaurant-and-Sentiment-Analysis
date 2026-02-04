@@ -5,106 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Admin Panel{% endblock %}</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
             background-color: #f4f4f4;
         }
+        
         .header {
             background-color: #F98866;
             color: white;
             padding: 1rem;
             text-align: center;
+            position: relative;
         }
+        
+        .header h1 {
+            font-size: 1.5rem;
+        }
+        
+        .user-info {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9rem;
+        }
+        
         .main-content {
             display: flex;
+            min-height: calc(100vh - 80px);
         }
+        
         .sidebar {
             width: 200px;
-            background-color: #F98866;;
+            background-color: #F98866;
             color: white;
             padding: 1rem;
             height: calc(100vh - 80px);
+            position: sticky;
+            top: 80px;
         }
+        
+        .sidebar.collapsed {
+            display: none;
+        }
+        
         .sidebar ul {
             list-style: none;
             padding: 0;
         }
+        
         .sidebar li {
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
+        
         .sidebar a {
             color: white;
             text-decoration: none;
             display: block;
-            padding: 0.5rem;
+            padding: 0.75rem 1rem;
             border-radius: 4px;
+            transition: background-color 0.3s ease;
         }
+        
         .sidebar a:hover {
-            background-color: #555;
+            background-color: #e07855;
         }
+        
+        .sidebar a.active {
+            background-color: #d06040;
+        }
+        
         .container {
             flex: 1;
+            padding: 2rem;
             max-width: none;
             margin: 0;
         }
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        
+        .container.full-width {
+            max-width: 100%;
         }
-        .logout {
-            text-align: right;
-            margin-bottom: 1rem;
-        }
-        .logout a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .logout a:hover {
-            text-decoration: underline;
-        }
+        
         .summary-cards {
             display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
+        
         .card {
             background: #fff;
             border: 1px solid #ddd;
             border-radius: 8px;
-            padding: 1rem;
+            padding: 1.5rem;
             text-align: center;
             flex: 1;
+            min-width: 200px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
         .card h3 {
             margin: 0 0 0.5rem 0;
             color: #333;
+            font-size: 1rem;
         }
+        
         .card p {
             font-size: 2rem;
             font-weight: bold;
-            color: #007bff;
+            color: #F98866;
             margin: 0;
         }
+        
         /* Hamburger Menu */
         .sidebar-toggle {
             display: none;
         }
+        
         .hamburger {
             display: none;
             flex-direction: column;
             cursor: pointer;
             padding: 10px;
             position: absolute;
-            top: 10px;
+            top: 50%;
+            transform: translateY(-50%);
             left: 10px;
         }
+        
         .hamburger span {
             width: 25px;
             height: 3px;
@@ -112,11 +146,13 @@
             margin: 3px 0;
             transition: 0.3s;
         }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .hamburger {
                 display: flex;
             }
+            
             .sidebar {
                 position: fixed;
                 left: -200px;
@@ -125,21 +161,37 @@
                 z-index: 1000;
                 transition: left 0.3s;
             }
+            
             #sidebar-toggle:checked ~ .main-content .sidebar {
                 left: 0;
             }
+            
             .main-content {
                 flex-direction: column;
             }
+            
             .container {
-                margin: 1rem;
                 padding: 1rem;
+            }
+            
+            .summary-cards {
+                flex-direction: column;
+            }
+            
+            .card {
+                min-width: 100%;
+            }
+            
+            .user-info {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
+    {# Sidebar toggle checkbox #}
     <input type="checkbox" id="sidebar-toggle" class="sidebar-toggle">
+    
     <div class="header">
         <label for="sidebar-toggle" class="hamburger">
             <span></span>
@@ -147,18 +199,28 @@
             <span></span>
         </label>
         <h1>Smart Restaurant Admin Panel</h1>
+        {% if user.is_authenticated and user.is_staff %}
+        <div class="user-info">
+            Logged in as: <strong>{{ user.username }}</strong>
+        </div>
+        {% endif %}
     </div>
+    
     <div class="main-content">
+        {# Sidebar navigation - visible ONLY if user is authenticated and is staff #}
+        {% if user.is_authenticated and user.is_staff %}
         <nav class="sidebar">
             <ul>
                 <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
                 <li><a href="{% url 'admin_orders' %}">Orders</a></li>
-                <li><a href="{% url 'admin_kds' %}">Kitchen Display System</a></li>
+                <li><a href="{% url 'admin_kds' %}">Kitchen Display</a></li>
                 <li><a href="{% url 'admin_feedback' %}">Feedback & Sentiment</a></li>
                 <li><a href="{% url 'admin_logout' %}">Logout</a></li>
             </ul>
         </nav>
-        <div class="container">
+        {% endif %}
+        
+        <div class="container{% if not user.is_authenticated or not user.is_staff %} full-width{% endif %}">
             {% block content %}{% endblock %}
         </div>
     </div>

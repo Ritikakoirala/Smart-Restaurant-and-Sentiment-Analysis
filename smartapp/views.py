@@ -321,16 +321,43 @@ def feedback_success(request):
 
 
 def admin_login(request):
+    """
+    Admin login view - standalone page with centered login form.
+    Uses Django's built-in authentication system.
+    
+    IMPORTANT: Always shows the login page, even if already authenticated.
+    This allows users to logout and login as a different admin.
+    """
+    # Always show the login page - don't auto-redirect to dashboard
+    # User can login or logout from here
+    
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        
+        # Use Django's authenticate() function
         user = authenticate(request, username=username, password=password)
-        if user is not None and user.is_staff:
-            login(request, user)
-            return redirect('admin_dashboard')
+        
+        if user is not None:
+            # Check if user is staff/admin
+            if user.is_staff:
+                # Django's login() creates session and handles CSRF
+                login(request, user)
+                messages.success(request, f'Welcome back, {user.username}!')
+                # Redirect to dashboard after successful login
+                next_page = request.GET.get('next')
+                return redirect(next_page if next_page else 'admin_dashboard')
+            else:
+                messages.error(request, 'Access denied. Staff credentials required.')
         else:
-            messages.error(request, 'Invalid credentials or not an admin user.')
-    return render(request, 'admin_login.html')
+            messages.error(request, 'Invalid username or password.')
+    
+    # Render standalone login template (no sidebar, centered form)
+    # Pass user info to show logout option if already authenticated
+    context = {
+        'user': request.user if request.user.is_authenticated else None
+    }
+    return render(request, 'admin_login_standalone.html', context)
 
 
 @login_required

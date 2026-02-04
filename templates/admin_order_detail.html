@@ -14,7 +14,7 @@
     <h3>Items</h3>
     <ul>
         {% for item in items %}
-            <li>{{ item.quantity }}x {{ item.item_name }} - ${{ item.total_price }}</li>
+            <li>{{ item.quantity }}x {{ item.item_name }} - {{ item.total_price }}</li>
         {% endfor %}
     </ul>
 

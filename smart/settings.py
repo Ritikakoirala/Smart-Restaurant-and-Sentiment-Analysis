@@ -148,6 +148,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Authentication settings
+# Redirect unauthenticated users to this URL
+LOGIN_URL = '/custom-admin/login/'
+# Redirect to dashboard after successful login
+LOGIN_REDIRECT_URL = '/custom-admin/dashboard/'
+# Redirect to login page after logout
+LOGOUT_REDIRECT_URL = '/custom-admin/login/'
+
 # Logging configuration for debugging
 LOGGING = {
     'version': 1,

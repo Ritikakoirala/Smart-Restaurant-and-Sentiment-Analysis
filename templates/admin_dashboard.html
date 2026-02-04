@@ -3,11 +3,8 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-    <div class="logout">
-        <a href="{% url 'admin_logout' %}">Logout</a>
-    </div>
     <h2>Welcome to Admin Dashboard</h2>
-    <p>You are logged in as {{ user.username }}.</p>
+    <p>You are logged in as <strong>{{ user.username }}</strong>.</p>
 
     <div class="summary-cards">
         <div class="card">
@@ -27,6 +24,7 @@
             <p>{{ ready_orders }}</p>
         </div>
     </div>
+    
     <style>
         @media (max-width: 768px) {
             .summary-cards {
