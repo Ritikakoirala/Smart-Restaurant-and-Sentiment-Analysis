@@ -477,6 +477,203 @@
         font-size: 14px;
       }
     }
+
+    /* Fixed Cart Widget - Top Right */
+    .cart-widget {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .cart-toggle {
+      background: #F98866;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .cart-toggle:hover {
+      background: #ff7555;
+      transform: scale(1.05);
+    }
+
+    .cart-badge {
+      background: #ff4d6d;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 8px;
+      font-size: 14px;
+      font-weight: bold;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .cart-panel {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      width: 320px;
+      max-height: 70vh;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .cart-panel.open {
+      display: flex;
+    }
+
+    .cart-panel-header {
+      background: #F98866;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-panel-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .cart-close {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .cart-panel-body {
+      padding: 15px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .cart-panel-items {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .cart-panel-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .cart-panel-item:last-child {
+      border-bottom: none;
+    }
+
+    .cart-panel-item-info {
+      flex: 1;
+    }
+
+    .cart-panel-item-name {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .cart-panel-item-details {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .cart-panel-item-price {
+      font-weight: bold;
+      color: #F98866;
+    }
+
+    .cart-panel-footer {
+      padding: 15px;
+      background: #f8f9fa;
+      border-top: 1px solid #eee;
+    }
+
+    .cart-subtotal {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .cart-subtotal-label {
+      color: #333;
+    }
+
+    .cart-subtotal-amount {
+      color: #F98866;
+    }
+
+    .generate-bill-btn {
+      width: 100%;
+      background: linear-gradient(45deg, #28a745, #20c997);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .generate-bill-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+    }
+
+    .generate-bill-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .empty-cart-message {
+      text-align: center;
+      color: #999;
+      padding: 30px 0;
+      font-size: 14px;
+    }
+
+    @media (max-width: 480px) {
+      .cart-widget {
+        top: 10px;
+        right: 10px;
+      }
+
+      .cart-toggle {
+        padding: 10px 15px;
+        font-size: 14px;
+      }
+
+      .cart-panel {
+        width: calc(100% - 20px);
+        right: 10px;
+        top: 60px;
+        max-height: 60vh;
+      }
+    }
   </style>
 </head>
 <body>
@@ -510,10 +707,30 @@
 <h2 class="section-title">Menu</h2>
 <section class="menu-section" id="menu-section"></section>
 
-<div class="cart" id="cart">
-  <h2>Your Cart</h2>
-  <ul id="cart-items"></ul>
-  <h3>Total: Rs. <span id="total-price">0</span></h3>
+<!-- Fixed Cart Widget -->
+<div class="cart-widget">
+  <button class="cart-toggle" onclick="toggleCartPanel()">
+    <span>🛒 Your Cart</span>
+    <span class="cart-badge" id="cart-badge">0</span>
+  </button>
+  <div class="cart-panel" id="cart-panel">
+    <div class="cart-panel-header">
+      <h3>Your Cart</h3>
+      <button class="cart-close" onclick="toggleCartPanel()">×</button>
+    </div>
+    <div class="cart-panel-body">
+      <ul class="cart-panel-items" id="cart-panel-items">
+        <li class="empty-cart-message">Your cart is empty</li>
+      </ul>
+    </div>
+    <div class="cart-panel-footer">
+      <div class="cart-subtotal">
+        <span class="cart-subtotal-label">Subtotal:</span>
+        <span class="cart-subtotal-amount">Rs. <span id="cart-subtotal">0</span></span>
+      </div>
+      <button class="generate-bill-btn" id="generate-bill-btn" onclick="generateBill()" disabled>Generate Bill</button>
+    </div>
+  </div>
 </div>
 
 <section class="order-form">
@@ -551,7 +768,7 @@
         <img src="${item.img}" alt="${item.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDIwMCAxNDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMTQwIiBmaWxsPSIjRjVGNUY1Ii8+Cjx0ZXh0IHg9IjEwMCIgeT0iNzAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM5Q0E0QUYiIGZvbnQtc2l6ZT0iMTIiPk5vIEltYWdlPC90ZXh0Pgo8L3N2Zz4=';">
         <h3>${item.name}</h3>
         <p>Rs. ${item.price}</p>
-        <input type="number" min="0" value="0" onchange="updateCart(${index}, this.value)">
+        <input type="number" min="0" max="15" value="0" onchange="updateCart(${index}, this.value)">
         <button onclick="addToCart(${index})">Add to Cart</button>
       `;
       menuSection.appendChild(card);
@@ -585,23 +802,165 @@
   function addToCart(index) {
     const input = document.querySelectorAll('.menu-card input')[index];
     const currentQty = parseInt(input.value) || 0;
+    if (currentQty >= 15) {
+      alert('Maximum quantity per item is 15. Please contact staff for larger orders.');
+      return;
+    }
     input.value = currentQty + 1;
     updateCart(index, input.value);
   }
 
   function renderCart() {
-    const cartItems = document.getElementById('cart-items');
-    cartItems.innerHTML = '';
+    const cartPanelItems = document.getElementById('cart-panel-items');
+    cartPanelItems.innerHTML = '';
 
     totalPrice = 0;
+    const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+    // Update badge
+    document.getElementById('cart-badge').textContent = itemCount;
+
+    // Auto-open cart panel when item is added
+    if (itemCount > 0) {
+      const panel = document.getElementById('cart-panel');
+      panel.classList.add('open');
+      // Cancel auto-close timer if exists
+      clearTimeout(window.cartAutoCloseTimeout);
+      // Auto-close after 5 seconds
+      window.cartAutoCloseTimeout = setTimeout(() => {
+        document.getElementById('cart-panel').classList.remove('open');
+      }, 5000);
+    }
+
+    // Render fixed cart panel
+    if (cart.length === 0) {
+      cartPanelItems.innerHTML = '<li class="empty-cart-message">Your cart is empty</li>';
+    } else {
+      cart.forEach((item, cartIndex) => {
+        const li = document.createElement('li');
+        li.className = 'cart-panel-item';
+        li.innerHTML = `
+          <div class="cart-panel-item-info">
+            <div class="cart-panel-item-name">${item.name}</div>
+            <div class="cart-panel-item-details">Qty: ${item.quantity} × Rs. ${item.price}</div>
+          </div>
+          <div class="cart-panel-item-price">
+            Rs. ${item.subtotal}
+            <button onclick="removeFromCart(${cartIndex})" style="background:#ff4d6d;color:white;border:none;padding:4px 10px;border-radius:15px;font-size:12px;cursor:pointer;margin-left:8px;" title="Remove item">✕</button>
+          </div>
+        `;
+        cartPanelItems.appendChild(li);
+        totalPrice += item.subtotal;
+      });
+    }
+
+    // Update subtotal and button state
+    document.getElementById('cart-subtotal').textContent = totalPrice;
+    document.getElementById('generate-bill-btn').disabled = cart.length === 0;
+  }
+
+  function toggleCartPanel() {
+    const panel = document.getElementById('cart-panel');
+    panel.classList.toggle('open');
+    // Cancel auto-close when manually toggled
+    if (panel.classList.contains('open')) {
+      clearTimeout(window.cartAutoCloseTimeout);
+    }
+  }
+
+  function generateBill() {
+    if (cart.length === 0) {
+      alert('Your cart is empty! Please add items to cart first.');
+      return;
+    }
+
+    // Generate bill content
+    let billContent = `
+      <div class="bill-popup" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:2000;">
+        <div class="bill-content" style="background:white;padding:30px;border-radius:15px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;">
+          <div style="text-align:center;border-bottom:2px dashed #F98866;padding-bottom:15px;margin-bottom:15px;">
+            <h2 style="color:#F98866;margin:0;">🧾 ORDER BILL</h2>
+            <p style="color:#666;font-size:14px;">Smart Restaurant</p>
+            <p style="color:#999;font-size:12px;">${new Date().toLocaleString()}</p>
+          </div>
+          
+          <div style="margin-bottom:15px;">
+            <h4 style="margin:0 0 10px 0;color:#333;">Items:</h4>
+            <table style="width:100%;border-collapse:collapse;">
+              <thead>
+                <tr style="background:#f5f5f5;">
+                  <th style="padding:8px;text-align:left;border-bottom:1px solid #ddd;">Item</th>
+                  <th style="padding:8px;text-align:center;border-bottom:1px solid #ddd;">Qty</th>
+                  <th style="padding:8px;text-align:right;border-bottom:1px solid #ddd;">Price</th>
+                  <th style="padding:8px;text-align:right;border-bottom:1px solid #ddd;">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+    `;
+
     cart.forEach(item => {
-      const li = document.createElement('li');
-      li.innerHTML = `${item.name} - Qty: ${item.quantity} - Price: Rs. ${item.price} - Subtotal: Rs. ${item.subtotal}`;
-      cartItems.appendChild(li);
-      totalPrice += item.subtotal;
+      billContent += `
+        <tr>
+          <td style="padding:8px;border-bottom:1px solid #eee;">${item.name}</td>
+          <td style="padding:8px;text-align:center;border-bottom:1px solid #eee;">${item.quantity}</td>
+          <td style="padding:8px;text-align:right;border-bottom:1px solid #eee;">Rs. ${item.price}</td>
+          <td style="padding:8px;text-align:right;border-bottom:1px solid #eee;">Rs. ${item.subtotal}</td>
+        </tr>
+      `;
     });
 
-    document.getElementById('total-price').textContent = totalPrice;
+    billContent += `
+              </tbody>
+            </table>
+          </div>
+          
+          <div style="border-top:2px solid #F98866;padding-top:15px;">
+            <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:bold;">
+              <span>Total:</span>
+              <span style="color:#F98866;">Rs. ${totalPrice}</span>
+            </div>
+          </div>
+          
+          <div style="margin-top:20px;text-align:center;">
+            <button onclick="closeBill()" style="background:#F98866;color:white;border:none;padding:12px 30px;border-radius:25px;font-size:16px;cursor:pointer;margin:5px;">Close</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Remove any existing bill popup
+    const existingBill = document.querySelector('.bill-popup');
+    if (existingBill) {
+      existingBill.remove();
+    }
+
+    // Add bill popup to body
+    document.body.insertAdjacentHTML('beforeend', billContent);
+  }
+
+  function closeBill() {
+    const billPopup = document.querySelector('.bill-popup');
+    if (billPopup) {
+      billPopup.remove();
+    }
+  }
+
+  function proceedToCheckout() {
+    closeBill();
+    // Scroll to order form
+    const orderForm = document.querySelector('.order-form');
+    if (orderForm) {
+      orderForm.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  function removeFromCart(cartIndex) {
+    // Remove the item from cart
+    cart.splice(cartIndex, 1);
+    // Re-render menu inputs to reflect new quantities
+    renderMenu();
+    // Update cart display
+    renderCart();
   }
 
   function filterMenu(category) {
