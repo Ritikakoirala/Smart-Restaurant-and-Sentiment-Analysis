@@ -674,6 +674,30 @@
         max-height: 60vh;
       }
     }
+
+    /* Form Validation Styles */
+    .order-details input.error {
+      border-color: #dc3545 !important;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+    }
+
+    .order-details input.valid {
+      border-color: #28a745 !important;
+      box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.25);
+    }
+
+    .validation-error {
+      color: #dc3545;
+      font-size: 12px;
+      margin-top: -5px;
+      margin-bottom: 10px;
+      margin-left: 10px;
+      display: none;
+    }
+
+    .validation-error.show {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -736,9 +760,12 @@
 <section class="order-form">
   <h2>Place Your Order</h2>
   <div class="order-details">
-    <input type="text" id="customer-name" placeholder="Customer Name" name="customer_name" required />
-    <input type="text" id="ordered-by" placeholder="Ordered By" name="ordered_by" />
-    <input type="text" id="table-number" placeholder="Table Number" name="table_number" required />
+    <input type="text" id="customer-name" placeholder="Customer Name (letters only)" name="customer_name" required />
+    <span class="validation-error" id="customer-name-error">Please enter a valid name (letters and spaces only)</span>
+    <input type="text" id="ordered-by" placeholder="Ordered By (letters only)" name="ordered_by" />
+    <span class="validation-error" id="ordered-by-error">Please enter a valid name (letters and spaces only)</span>
+    <input type="text" id="table-number" placeholder="Table Number (numbers only)" name="table_number" required />
+    <span class="validation-error" id="table-number-error">Please enter a valid table number (numbers only)</span>
     <label for="allergy">Are you allergic to any ingredients?</label>
     <input type="text" id="allergy" placeholder="e.g., Nuts, Dairy, Gluten, Seafood (leave blank if none)" name="allergy" />
   </div>
@@ -752,6 +779,105 @@
     { name: "{{ item.name }}", price: {{ item.price }}, category: "{{ item.category }}", img: "{{ item.img }}" },
     {% endfor %}
   ];
+
+  // Form Validation Functions
+  // Validate name field - allows only letters and spaces
+  function validateName(fieldId, errorId) {
+    const field = document.getElementById(fieldId);
+    const errorEl = document.getElementById(errorId);
+    const value = field.value.trim();
+    
+    // Allow empty field (not required for ordered-by)
+    if (value === '') {
+      field.classList.remove('error', 'valid');
+      errorEl.classList.remove('show');
+      return true;
+    }
+    
+    // Name pattern: only letters, spaces, hyphens, and apostrophes allowed
+    const namePattern = /^[a-zA-Z][a-zA-Z\s\-']*$/;
+    
+    if (namePattern.test(value)) {
+      field.classList.remove('error');
+      field.classList.add('valid');
+      errorEl.classList.remove('show');
+      return true;
+    } else {
+      field.classList.remove('valid');
+      field.classList.add('error');
+      errorEl.classList.add('show');
+      return false;
+    }
+  }
+
+  // Validate table number - allows only digits
+  function validateTableNumber(fieldId, errorId) {
+    const field = document.getElementById(fieldId);
+    const errorEl = document.getElementById(errorId);
+    const value = field.value.trim();
+    
+    // Allow empty field
+    if (value === '') {
+      field.classList.remove('error', 'valid');
+      errorEl.classList.remove('show');
+      return true;
+    }
+    
+    // Table number pattern: only digits
+    const tablePattern = /^\d+$/;
+    
+    if (tablePattern.test(value)) {
+      field.classList.remove('error');
+      field.classList.add('valid');
+      errorEl.classList.remove('show');
+      return true;
+    } else {
+      field.classList.remove('valid');
+      field.classList.add('error');
+      errorEl.classList.add('show');
+      return false;
+    }
+  }
+
+  // Initialize validation on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    const customerName = document.getElementById('customer-name');
+    const orderedBy = document.getElementById('ordered-by');
+    const tableNumber = document.getElementById('table-number');
+    
+    // Customer Name validation (required)
+    customerName.addEventListener('input', function() {
+      // Remove non-letter characters in real-time
+      this.value = this.value.replace(/[^a-zA-Z\s\-']/g, '');
+      validateName('customer-name', 'customer-name-error');
+    });
+    
+    customerName.addEventListener('blur', function() {
+      validateName('customer-name', 'customer-name-error');
+    });
+    
+    // Ordered By validation (optional)
+    orderedBy.addEventListener('input', function() {
+      // Remove non-letter characters in real-time
+      this.value = this.value.replace(/[^a-zA-Z\s\-']/g, '');
+      validateName('ordered-by', 'ordered-by-error');
+    });
+    
+    orderedBy.addEventListener('blur', function() {
+      validateName('ordered-by', 'ordered-by-error');
+    });
+    
+    // Table Number validation (required)
+    tableNumber.addEventListener('input', function() {
+      // Remove non-digit characters in real-time
+      this.value = this.value.replace(/[^0-9]/g, '');
+      validateTableNumber('table-number', 'table-number-error');
+    });
+    
+    tableNumber.addEventListener('blur', function() {
+      validateTableNumber('table-number', 'table-number-error');
+    });
+  });
 
   // Rest of the JavaScript code remains the same
   let cart = [];
@@ -978,15 +1104,40 @@
   function submitOrder() {
     event.preventDefault();
 
-    const name = document.getElementById('customer-name').value;
-    const orderedBy = document.getElementById('ordered-by').value || name;
-    const table = document.getElementById('table-number').value;
+    const name = document.getElementById('customer-name').value.trim();
+    const orderedBy = document.getElementById('ordered-by').value.trim() || name;
+    const table = document.getElementById('table-number').value.trim();
     const allergy = document.getElementById('allergy').value;
 
-    if (!name || !table || cart.length === 0) {
-      document.getElementById('feedback-msg').textContent = 'Please fill in all required fields and add items to cart.';
+    // Validate all required fields before submission
+    const isNameValid = validateName('customer-name', 'customer-name-error');
+    const isTableValid = validateTableNumber('table-number', 'table-number-error');
+
+    // Validate ordered-by if it's filled
+    if (document.getElementById('ordered-by').value.trim() !== '') {
+      validateName('ordered-by', 'ordered-by-error');
+    }
+
+    if (!name || !table) {
+      document.getElementById('feedback-msg').textContent = 'Please fill in all required fields.';
+      document.getElementById('feedback-msg').style.color = '#dc3545';
       return;
     }
+
+    if (!isNameValid || !isTableValid) {
+      document.getElementById('feedback-msg').textContent = 'Please fix the validation errors before submitting.';
+      document.getElementById('feedback-msg').style.color = '#dc3545';
+      return;
+    }
+
+    if (cart.length === 0) {
+      document.getElementById('feedback-msg').textContent = 'Please add items to your cart before submitting.';
+      document.getElementById('feedback-msg').style.color = '#dc3545';
+      return;
+    }
+
+    // Clear any previous error messages
+    document.getElementById('feedback-msg').textContent = '';
 
     const orderData = {
       name: name,
