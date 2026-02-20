@@ -13,7 +13,6 @@ A Smart Restaurant Web Application built using Django, HTML, CSS, and JavaScript
 
 📌 Features
 👤 Customer Side
-
  *Dynamic food ordering using JavaScript const menu
  *Displays all food items without hardcoding in HTML
  *Quantity selection for each food item
